@@ -21,6 +21,7 @@ db.mails = require("./mails")(sequelize, Sequelize);
 db.helpdesks = require("./helpdesks")(sequelize, Sequelize);
 db.storages = require("./storages")(sequelize, Sequelize);
 db.purchases = require("./purchases")(sequelize, Sequelize);
+db.notifications = require("./notifications")(sequelize, Sequelize);
 
 // db.partners.belongsTo(db.users, {foreignKey:'user_id', as:'users'})
 // db.sessions.belongsTo(db.users, {foreignKey:'user_id', as:'users'})

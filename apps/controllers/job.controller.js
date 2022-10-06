@@ -1,6 +1,7 @@
 
 const db = require('../models')
 const jobs = db.jobs
+const notifications = db.notifications
 const Op = db.Sequelize.Op
 require('dotenv').config()
 
@@ -54,11 +55,19 @@ exports.create = async (req, res) => {
         req_by: req.body.req_by,
         dept: req.body.dept,
         subject: req.body.subject,
-        detail: req.body.subject == 'Masalah Lainnya' ? '' : req.body.detail,
+        detail: req.body.subject == 'Masalah Lainnya' ? 'Masalah Lainnya' : req.body.subject == 'Preventif' ? 'Preventif' : req.body.detail,
         notes: req.body.notes
     }
     try {
         const result = await jobs.create(payload)
+        if (result) {
+            const notifPayload = {
+                user_id: req.body.user_id,
+                job_id: result.id,
+                content: `Job request mu sedang diajukan, Job ID mu adalah ${result.id} mohon menunggu untuk proses pengajuannya. Terima kasih.`
+            }
+            const resultNotif = await notifications.create(notifPayload)
+        }
         return res.status(200).send(result)
     } catch (error) {
         return res.status(500).send({ message: "Server mengalami gangguan!", error })
@@ -111,7 +120,19 @@ exports.update_final = async (req, res) => {
         result.work_by = req.body.work_by
         result.notes = req.body.notes
         result.status = req.body.status
-        await result.save()
+        result.modified_on = req.body.modified_on
+        const resultSuccess = await result.save()
+        if (resultSuccess) {
+            if (req.body.status == 3) {
+                const notifPayload = {
+                    user_id: result.user_id,
+                    job_id: result.id,
+                    content: `Job request ${result.id} sudah selesai. Terima kasih.`,
+                    status: 3
+                }
+                const resultNotif = await notifications.create(notifPayload)
+            }
+        }
 
         const results = await jobs.findOne({
             where: {
@@ -138,8 +159,29 @@ exports.update_status = async (req, res) => {
             return res.status(404).send({ message: "Data tidak ditemukan!" })
         }
         result.status = req.body.status
+        result.modified_on = req.body.modified_on
+        result.notes = req.body.notes || result.notes
         result.approved_by = 'EDP Manager'
-        await result.save()
+        const resultApproval = await result.save()
+        if (resultApproval) {
+            if (req.body.status == 1) {
+                const notifPayload = {
+                    user_id: result.user_id,
+                    job_id: result.id,
+                    content: `Job request ${result.id} sudah disetujui, Mohon menunggu hingga proses selesai. Terima kasih.`,
+                    status: 1
+                }
+                const resultNotif = await notifications.create(notifPayload)
+            } else if (req.body.status == 2) {
+                const notifPayload = {
+                    user_id: result.user_id,
+                    job_id: result.id,
+                    content: `Job request ${result.id} tidak dapat kami setujui karena ${req.body.notes}. Terima kasih.`,
+                    status: 2
+                }
+                const resultNotif = await notifications.create(notifPayload)
+            }
+        }
 
         const results = await jobs.findOne({
             where: {

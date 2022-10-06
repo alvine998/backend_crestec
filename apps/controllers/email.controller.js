@@ -110,6 +110,7 @@ exports.update_final = async (req, res) => {
         result.work_by = req.body.work_by
         result.notes = req.body.notes
         result.status = req.body.status
+        result.modified_on = req.body.modified_on
         await result.save()
 
         const results = await mails.findOne({
@@ -138,6 +139,7 @@ exports.update_status = async (req, res) => {
         }
         result.status = req.body.status
         result.approved_by = 'EDP Manager'
+        result.modified_on = req.body.modified_on
         await result.save()
 
         const results = await mails.findOne({

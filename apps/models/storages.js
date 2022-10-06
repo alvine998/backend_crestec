@@ -42,7 +42,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     device_status: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
     },
     work_by: {
       type: DataTypes.STRING(255),
@@ -51,7 +51,7 @@ module.exports = function(sequelize, DataTypes) {
     created_on: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
     },
     modified_on: {
       type: DataTypes.DATE,
@@ -73,6 +73,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "user_id",
+        using: "BTREE",
+        fields: [
+          { name: "user_id" },
         ]
       },
     ]

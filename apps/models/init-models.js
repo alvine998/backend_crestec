@@ -1,14 +1,12 @@
 var DataTypes = require("sequelize").DataTypes;
-var _mails = require("./mails");
+var _notifications = require("./notifications");
 
 function initModels(sequelize) {
-  var mails = _mails(sequelize, DataTypes);
+  var notifications = _notifications(sequelize, DataTypes);
 
-  mails.belongsTo(users, { as: "user", foreignKey: "user_id"});
-  users.hasMany(mails, { as: "mails", foreignKey: "user_id"});
 
   return {
-    mails,
+    notifications,
   };
 }
 module.exports = initModels;

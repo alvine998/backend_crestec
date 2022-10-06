@@ -99,11 +99,11 @@ exports.login = async (req, res) => {
         const existUsers = await users.findOne({
             where: {
                 deleted: { [Op.eq]: 0 },
-                email: { [Op.eq]: req.body.email }
+                username: { [Op.eq]: req.body.username }
             }
         })
         if (!existUsers) {
-            return res.status(404).send({ message: "Email tidak ditemukan!" })
+            return res.status(404).send({ message: "Username tidak ditemukan!" })
         }
         const comparePassword = await bcrypt.compare(req.body.password, existUsers.password)
         if (!comparePassword) {

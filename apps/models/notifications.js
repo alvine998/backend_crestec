@@ -1,31 +1,41 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('helpdesks', {
+  return sequelize.define('notifications', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    created_by: {
-      type: DataTypes.STRING(100),
+    user_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    title: {
-      type: DataTypes.STRING(100),
+    job_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    mail_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    storage_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    content: {
+      type: DataTypes.TEXT,
       allowNull: false
     },
-    slug: {
-      type: DataTypes.STRING(100),
-      allowNull: false
+    read: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0
     },
-    category: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
-    body: {
-      type: DataTypes.JSON,
-      allowNull: false
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
     created_on: {
       type: DataTypes.DATE,
@@ -43,7 +53,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'helpdesks',
+    tableName: 'notifications',
     timestamps: false,
     indexes: [
       {

@@ -7,6 +7,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    job_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     req_by: {
       type: DataTypes.STRING(100),
       allowNull: false
@@ -43,7 +47,7 @@ module.exports = function(sequelize, DataTypes) {
     created_on: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
     },
     modified_on: {
       type: DataTypes.DATE,
