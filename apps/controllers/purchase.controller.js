@@ -1,6 +1,7 @@
 
 const db = require('../models')
 const purchases = db.purchases
+const jobs = db.jobs
 const Op = db.Sequelize.Op
 require('dotenv').config()
 
@@ -49,8 +50,21 @@ exports.single = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
+    if (!req.body.job_id) {
+        return res.status(400).send({ message: "Parameter Job ID wajib diisi" })
+    }
+    const existJob = await jobs.findOne({
+        where: {
+            deleted: { [Op.eq]: 0 },
+            id: { [Op.eq]: req.body.job_id }
+        }
+    })
+    if (!existJob) {
+        return res.status(404).send({ message: "Data job tidak ditemukan!" })
+    }
     const payload = {
         req_by: req.body.req_by,
+        job_id: existJob.id,
         dept: req.body.dept,
         in_kind: req.body.in_kind,
         total: req.body.total,
@@ -116,7 +130,7 @@ exports.update_final = async (req, res) => {
             where: {
                 deleted: { [Op.eq]: 0 },
                 id: { [Op.eq]: req.query.id }
-            }   
+            }
         })
         res.status(200).send({ message: "Berhasil ubah data", result: results })
         return

@@ -19,7 +19,8 @@ exports.list = async (req, res) => {
                 ...req.query.dept && { dept: { [Op.eq]: req.query.dept } },
                 ...req.query.subject && { subject: { [Op.eq]: req.query.subject } },
                 ...req.query.user_id && { user_id: { [Op.eq]: req.query.user_id } },
-                ...req.query.status && { status: { [Op.eq]: req.query.status } }
+                ...req.query.status && { status: { [Op.eq]: req.query.status } },
+                ...req.query.start_date && req.query.end_date && {created_on: {[Op.between]: [new Date(req.query.start_date).toISOString(), new Date(req.query.end_date).toISOString()]}}
             },
             order: [
                 ['created_on', 'DESC'],
@@ -56,7 +57,9 @@ exports.create = async (req, res) => {
         dept: req.body.dept,
         subject: req.body.subject,
         detail: req.body.subject == 'Masalah Lainnya' ? 'Masalah Lainnya' : req.body.subject == 'Preventif' ? 'Preventif' : req.body.detail,
-        notes: req.body.notes
+        notes: req.body.notes,
+        work_by: req.body.work_by || null,
+        approved_by: req.body.approved_by || null
     }
     try {
         const result = await jobs.create(payload)
@@ -118,6 +121,7 @@ exports.update_final = async (req, res) => {
         }
         result.result = req.body.result
         result.work_by = req.body.work_by
+        result.approved_by = req.body.approved_by
         result.notes = req.body.notes
         result.status = req.body.status
         result.modified_on = req.body.modified_on
