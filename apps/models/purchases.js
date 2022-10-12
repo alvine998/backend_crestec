@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     job_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     req_by: {
       type: DataTypes.STRING(100),
@@ -25,15 +25,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     total: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     estimation_price: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     total_price: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     approved_by: {
       type: DataTypes.STRING(100),

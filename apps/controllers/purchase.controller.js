@@ -50,21 +50,21 @@ exports.single = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    if (!req.body.job_id) {
-        return res.status(400).send({ message: "Parameter Job ID wajib diisi" })
-    }
-    const existJob = await jobs.findOne({
-        where: {
-            deleted: { [Op.eq]: 0 },
-            id: { [Op.eq]: req.body.job_id }
+    const existJob ={}
+    if (req.body.job_id) {
+        existJob = await jobs.findOne({
+            where: {
+                deleted: { [Op.eq]: 0 },
+                id: { [Op.eq]: req.body.job_id }
+            }
+        })
+        if (!existJob) {
+            return res.status(404).send({ message: "Data job tidak ditemukan!" })
         }
-    })
-    if (!existJob) {
-        return res.status(404).send({ message: "Data job tidak ditemukan!" })
     }
     const payload = {
         req_by: req.body.req_by,
-        job_id: existJob.id,
+        job_id: existJob.id || null,
         dept: req.body.dept,
         in_kind: req.body.in_kind,
         total: req.body.total,
